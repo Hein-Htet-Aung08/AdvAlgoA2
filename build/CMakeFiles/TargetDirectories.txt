@@ -1,0 +1,3 @@
+/Users/hein/Documents/UTS/Spring 2026/Advanced Algorithms/Assignment2/AdvAlgoA2/build/CMakeFiles/benchmark.dir
+/Users/hein/Documents/UTS/Spring 2026/Advanced Algorithms/Assignment2/AdvAlgoA2/build/CMakeFiles/edit_cache.dir
+/Users/hein/Documents/UTS/Spring 2026/Advanced Algorithms/Assignment2/AdvAlgoA2/build/CMakeFiles/rebuild_cache.dir
