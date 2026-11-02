@@ -3,7 +3,6 @@
 #include <optional>
 #include <cstdint>
 #include <vector>
-#include <cstdint>
 #include <cstddef>
 
 //Stucts
@@ -19,7 +18,7 @@ struct SortMetrics{
     std::uint64_t comparisons = 0;
     std::uint64_t swaps = 0;
     std::uint64_t maximumRecursionDepth = 0;
-    double partitionImbalanaceSum = 0.0;
+    double partitionImbalanceSum = 0.0;
     std::uint64_t partitionCount = 0;
 };
 
@@ -35,6 +34,7 @@ struct BenchmarkResult{
 
     std::string measurementMode; //"performance" or "analysis"
 
+    std::optional<double> executionTimeMilliseconds;
     std::optional<std::uint64_t> comparisons;
     std::optional<std::uint64_t> swaps;
     std::optional<std::uint64_t> maximumRecursionDepth;
