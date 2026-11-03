@@ -566,10 +566,6 @@ int main(){
     std::cout << "Benchmark framework ready\n";
 
     BenchmarkConfig config;
-    config.counts = {100, 1000};
-    config.randomizedSeeds = {23};
-    config.pivotSeeds = {80, 40};
-    config.repetitions = 2;
 
     std::vector<BenchmarkResult> results = runAllBenchmarks(config);
 
