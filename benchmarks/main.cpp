@@ -50,6 +50,16 @@ struct BenchmarkResult{
     std::string runStatus;
 };
 
+struct TimingStats{
+    std::size_t sampleCount = 0;
+    
+    double mean = 0.0;
+    double median = 0.0;
+    double standardDeviation = 0.0;
+    double minimum = 0.0;
+    double maximum = 0.0;
+};
+
 //Random arrays
 std::vector<int> randomArrays(std::size_t size, unsigned int seed){
     std::vector<int> array;
