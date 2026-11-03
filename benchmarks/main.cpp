@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <chrono>
 #include "../include/randomized_quicksort.hpp"
+#include "../include/deterministic_quicksort.hpp"
 
 //Stucts for this
 struct BenchmarkConfig {
