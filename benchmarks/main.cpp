@@ -8,6 +8,7 @@
 #include <numeric>
 #include <random>
 #include <stdexcept>
+#include <chrono>
 
 //Stucts for this
 struct BenchmarkConfig {
@@ -154,6 +155,16 @@ std::vector<int> generateInput(const std::string& inputType, std::size_t size, u
 }
 
 //Run Benchmark algorithm
+BenchmarkResult runSingleBenchmark(
+    const std::vector<int>& originalArray,
+    const std::string& inputType,
+    const std::string& algorithmName,
+    std::optional<unsigned int> inputSeed,
+    std::optional<unsigned int> pivotSeed,
+    int repetitionNumber
+){
+    
+}
 
 //Write functions
 
