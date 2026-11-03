@@ -317,6 +317,57 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
             throw std::runtime_error("Cannot create CSV file: " + filePath);
         }
 
+        file << std::setprecision(15);
+
+        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,mean_partition_imbalance,correctness_passed,run_status\n";
+
+        for(const BenchmarkResult& result: results){
+            if(result.inputType != inputType){
+                continue;
+            }
+
+            file << result.inputType << ',' << result.algorithmName << ',' << result.arraySize << ',';
+
+            if(result.inputSeed.has_value()){
+                file << result.inputSeed.value();
+            }
+            file << ',';
+
+            if(result.pivotSeed.has_value()){
+                file << result.pivotSeed.value();
+            }
+            file << ',';
+
+            file << result.repetitionNumber << ',' << result.measurementMode << ',';
+
+            if(result.executionTimeMilliseconds.has_value()){
+                file << result.executionTimeMilliseconds.value();
+            }
+            file << ',';
+
+            if(result.comparisons.has_value()){
+                file << result.comparisons.value();
+            }
+            file << ',';
+
+            if(result.swaps.has_value()){
+                file << result.swaps.value();
+            }
+            file << ',';
+
+            if(result.maximumRecursionDepth.has_value()){
+                file << result.maximumRecursionDepth.value();
+            }
+            file << ',';
+
+            if(result.meanPartitionImbalance.has_value()){
+                file << result.meanPartitionImbalance.value();
+            }
+            file << ',';
+
+            file << (result.correctnessPassed ? "true" : "false") << ',' << result.runStatus << '\n';
+        }
+
         std::cout << "Created: " << filePath << '\n';
     }
 
