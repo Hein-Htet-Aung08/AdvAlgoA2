@@ -65,7 +65,7 @@ void helperRDAAnalysis(std::vector<int>& input, int lowerLimit, int upperLimit, 
 
     int total = leftSize + rightSize;
     if(total > 0){
-        double imbalance = static_cast<double>(std::abs(leftSize-rightSize)/total);
+        double imbalance = static_cast<double>(std::abs(leftSize-rightSize))/total;
 
         metrics.partitionImbalanceSum += imbalance;
         ++metrics.partitionCount;
