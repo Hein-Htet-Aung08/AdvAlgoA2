@@ -13,6 +13,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <map>
+#include <tuple>
 #include "../include/randomized_quicksort.hpp"
 #include "../include/deterministic_quicksort.hpp"
 
@@ -373,6 +375,26 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
 
 }
 
+void writeDashboard(const std::vector<BenchmarkResult>& results, const BenchmarkConfig& config){
+    using GroupKey = std::tuple<std::string, std::string, std::size_t>;
+
+    std::map<GroupKey, std::vector<double>> timings;
+
+    for(const BenchmarkResult& result: results){
+        if(!result.correctnessPassed){
+            continue;
+        }
+
+        GroupKey key {result.inputType, result.algorithmName, result.arraySize};
+
+        if(result.measurementMode == "performance" && result.executionTimeMilliseconds.has_value()){
+            timings[key].push_back(result.executionTimeMilliseconds.value());
+        }
+    }
+
+    std::cout << "Dashboard timing groups: " << timings.size() << '\n';
+}
+
 //Main benchmark algorithm
 
 //main
@@ -405,6 +427,8 @@ int main(){
     std::cout << "Total records: " << results.size() << '\n';
     std::cout << "Passed: " << passed << '\n';
     std::cout << "Failed: " << failed << '\n';
+
+    writeDashboard(results, config);
 
     return 0;
 }
