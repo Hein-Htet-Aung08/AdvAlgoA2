@@ -4,12 +4,12 @@
 #include <algorithm>
 #include "../include/randomized_quicksort.hpp"
 
-void prtVec(std::vector<int> v) {
-    for (int i : v) {
-        std::cout << i << ',';
-    }
-    std::cout << '\n';
-}
+// void prtVec(std::vector<int> v) {
+//     for (int i : v) {
+//         std::cout << i << ',';
+//     }
+//     std::cout << '\n';
+// }
 
 void randomizedQSHelper(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt19937& gen){
     if(lowerLimit >= upperLimit) return;
@@ -94,27 +94,27 @@ AnalysisResult randomized_quicksort_analysis(std::vector<int> input, const unsig
     return analysisResult;
 }
 
-int main(int argc, char* argv[]) {
-    std::vector<int> test {3,5,2,4,1};
-    std::vector<int> sorted {test};
-    randomized_quicksort(sorted, 1233);
-    AnalysisResult analysisResult = randomized_quicksort_analysis(test, 1233);
+// int main(int argc, char* argv[]) {
+//     std::vector<int> test {3,5,2,4,1};
+//     std::vector<int> sorted {test};
+//     randomized_quicksort(sorted, 1233);
+//     AnalysisResult analysisResult = randomized_quicksort_analysis(test, 1233);
 
-    prtVec(test);
-    prtVec(sorted);
-    prtVec(analysisResult.sortedArray);
+//     prtVec(test);
+//     prtVec(sorted);
+//     prtVec(analysisResult.sortedArray);
 
-    std::cout << "Same sorted result: " << (sorted == analysisResult.sortedArray) << '\n';
+//     std::cout << "Same sorted result: " << (sorted == analysisResult.sortedArray) << '\n';
 
-    std::cout << "Comparisons: " << analysisResult.metrics.comparisons << '\n';
+//     std::cout << "Comparisons: " << analysisResult.metrics.comparisons << '\n';
 
-    std::cout << "Swaps: " << analysisResult.metrics.swaps << '\n';
+//     std::cout << "Swaps: " << analysisResult.metrics.swaps << '\n';
 
-    std::cout << "Maximum recursion depth: " << analysisResult.metrics.maximumRecursionDepth << '\n';
+//     std::cout << "Maximum recursion depth: " << analysisResult.metrics.maximumRecursionDepth << '\n';
 
-    if (analysisResult.metrics.partitionCount > 0) {
-        std::cout << "Mean partition imbalance: " << analysisResult.metrics.partitionImbalanceSum / analysisResult.metrics.partitionCount << '\n';
-    }
+//     if (analysisResult.metrics.partitionCount > 0) {
+//         std::cout << "Mean partition imbalance: " << analysisResult.metrics.partitionImbalanceSum / analysisResult.metrics.partitionCount << '\n';
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

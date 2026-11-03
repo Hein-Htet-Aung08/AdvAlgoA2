@@ -171,6 +171,31 @@ BenchmarkResult runSingleBenchmark(
 
     std::vector<int> expectedArray = originalArray;
     std::sort(expectedArray.begin(), expectedArray.end());
+
+    auto start = std::chrono::steady_clock::now();
+    auto end = std::chrono::steady_clock::now();
+
+    if(algorithmName == "randomized"){
+        if(!pivotSeed.has_value()) throw std::invalid_argument("Randomized Quicksort requires a pivot seed.");
+
+        start = std::chrono::steady_clock::now();
+        randomized_quicksort(workingArray, pivotSeed.value());
+        end = std::chrono::steady_clock::now();
+    }else if(algorithmName == "deterministic"){
+        start = std::chrono::steady_clock::now();
+        deterministic_quicksort_analysis(workingArray);
+        end = std::chrono::steady_clock::now();
+    }else{
+        throw std::invalid_argument("Unknown algorithm: " + algorithmName);
+    }
+
+    std::chrono::duration<double, std::milli> elapsed = end - start;
+
+    result.executionTimeMilliseconds = elapsed.count();
+
+    result.correctnessPassed = (workingArray == expectedArray);
+    result.runStatus = result.correctnessPassed ? "PASS" : "FAIL";
+    return result;
 }
 
 //Write functions
@@ -180,12 +205,19 @@ BenchmarkResult runSingleBenchmark(
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> test = generateInput("many_duplicates", 20, 42);
+    std::vector<int> test = generateInput("random", 1000, 42);
 
-    for(int value: test){
-        std::cout << value << " ";
-    }
-    std::cout << "\n";
+    BenchmarkResult deterministic = runSingleBenchmark(test, "random", "deterministic", 42, std::nullopt, 1);
+
+    BenchmarkResult randomized = runSingleBenchmark(test, "random", "randomized", 42, 80, 1);
+
+    std::cout << "Deterministic QS:\n";
+    std::cout << "Time: " << deterministic.executionTimeMilliseconds.value() << " ms\n";
+    std::cout << "Correct: " << deterministic.correctnessPassed << "\n";
+
+    std::cout << "\nRandomized QS:\n";
+    std::cout << "Time: " << randomized.executionTimeMilliseconds.value() << " ms\n";
+    std::cout << "Correct: " << randomized.correctnessPassed << "\n";
 
     return 0;
 }
