@@ -75,12 +75,10 @@ void randomizedQSHelperAnalysis(std::vector<int>& input, int lowerLimit, int upp
     randomizedQSHelperAnalysis(input, boundary+1, upperLimit, gen, metrics, depth+1);
 }
 
-std::vector<int> randomized_quicksort(std::vector<int>& input, const unsigned int& seed) {
+void randomized_quicksort(std::vector<int>& input, const unsigned int& seed) {
     std::mt19937 gen(seed);
 
     randomizedQSHelper(input, 0, static_cast<int>(input.size()) - 1, gen);
-
-    return input;
 }
 
 AnalysisResult randomized_quicksort_analysis(std::vector<int> input, const unsigned int& seed){
