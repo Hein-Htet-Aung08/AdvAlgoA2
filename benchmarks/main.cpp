@@ -18,6 +18,7 @@ struct BenchmarkConfig {
     std::vector<std::size_t> counts {100, 1000, 5000, 10000};
     std::vector<unsigned int> randomizedSeeds {23, 48, 123321};
     std::vector<unsigned int> pivotSeeds {80, 40, 62};
+    std::vector<std::string> inputTypes {"random", "sorted", "reverse", "nearly_sorted", "many_duplicates", "all_equal"};
     int repetitions {3};
     std::string outputDirectory {"results/"};
 };
@@ -233,6 +234,18 @@ BenchmarkResult runSingleBenchmark(
     return result;
 }
 
+std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
+    std::vector<BenchmarkResult> results;
+
+    for(const std::string& inputType: config.inputTypes){
+        for(std::size_t size: config.counts){
+            std::cout << "Processing " << inputType << " (n=" << size << ")\n";
+        }
+    }
+
+    return results;
+}
+
 //Write functions
 
 //Main benchmark algorithm
@@ -240,27 +253,11 @@ BenchmarkResult runSingleBenchmark(
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> test = generateInput("random", 1000, 42);
+    BenchmarkConfig config;
 
-    BenchmarkResult deterministic = runSingleBenchmark(test, "random", "deterministic", 42, std::nullopt, 1, "performance");
+    std::vector<BenchmarkResult> results = runAllBenchmarks(config);
 
-    BenchmarkResult randomized = runSingleBenchmark(test, "random", "randomized", 42, 80, 1, "performance");
-
-    std::cout << "Deterministic QS:\n";
-    std::cout << "Time: " << deterministic.executionTimeMilliseconds.value() << " ms\n";
-    std::cout << "Correct: " << deterministic.correctnessPassed << "\n";
-
-    std::cout << "\nRandomized QS:\n";
-    std::cout << "Time: " << randomized.executionTimeMilliseconds.value() << " ms\n";
-    std::cout << "Correct: " << randomized.correctnessPassed << "\n";
-
-    BenchmarkResult analysis = runSingleBenchmark(test, "random", "randomized", 42, 80, 1, "analysis");
-
-    std::cout << "\nAnalysis QS:\n";
-    std::cout << "Correct: " << analysis.correctnessPassed << '\n';
-    std::cout << "Comparisons: " << analysis.comparisons.value() << '\n';
-    std::cout << "Swaps: " << analysis.swaps.value() << '\n';
-    std::cout << "Depth: " << analysis.maximumRecursionDepth.value() << '\n';
+    std::cout << "Total results: " << results.size() << "\n";
 
     return 0;
 }
