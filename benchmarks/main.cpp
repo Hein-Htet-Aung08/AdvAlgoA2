@@ -427,13 +427,18 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
 
     std::map<GroupKey, std::vector<double>> timings;
     std::map<GroupKey, std::vector<const BenchmarkResult*>> analysisGroups;
+    std::map<GroupKey, std::size_t> attemptedRuns;
+    std::map<GroupKey, std::size_t> failedRuns;
 
     for(const BenchmarkResult& result: results){
+        GroupKey key {result.inputType, result.algorithmName, result.arraySize};
+
+        ++attemptedRuns[key];
+
         if(!result.correctnessPassed){
+            ++failedRuns[key];
             continue;
         }
-
-        GroupKey key {result.inputType, result.algorithmName, result.arraySize};
 
         if(result.measurementMode == "performance" && result.executionTimeMilliseconds.has_value()){
             timings[key].push_back(result.executionTimeMilliseconds.value());
@@ -455,7 +460,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     }
 
     file << std::setprecision(15);
-    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,mean_partition_imbalance\n";
+    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,mean_partition_imbalance,attempted_runs,passed_runs,failed_runs\n";
 
     for(const auto& [key, times]: timings){
         TimingStats stats = calculateTimingStats(times);
@@ -510,7 +515,13 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         if(imbalanceCount > 0){
             file << meanImbalance;
         }
-        file << '\n';
+        file << ',';
+
+        std::size_t attempted = attemptedRuns[key];
+        std::size_t failed = failedRuns[key];
+        std::size_t passed = attempted - failed;
+
+        file << attempted << ',' << passed << ',' << failed << '\n';
     }
 
     std::cout << "Dashboard timing groups: " << timings.size() << '\n';
