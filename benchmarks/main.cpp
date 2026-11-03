@@ -256,7 +256,6 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
 
     for(const std::string& inputType: config.inputTypes){
         for(std::size_t size: config.counts){
-            std::cout << "Processing " << inputType << " (n=" << size << ")\n";
 
             bool requiresSeed = inputType == "random" || inputType == "nearly_sorted" || inputType=="many_duplicates";
 
@@ -300,15 +299,6 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
                     results.push_back(analysis);
 
                 }
-
-                std::cout << "Generated " << inputType << " (n=" << size << ")";
-
-                if(inputSeed.has_value()){
-                    std::cout << " seed=" << inputSeed.value();
-                }
-
-                std::cout << '\n';
-
             }
         }
     }
@@ -555,40 +545,54 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
 
         file << attempted << ',' << passed << ',' << failed << '\n';
     }
-
-    std::cout << "Dashboard timing groups: " << timings.size() << '\n';
 }
 
 //Main benchmark algorithm
+int runBenchmarProgram(){
+    try {
+        BenchmarkConfig config;
+
+        std::cout << "----------------- Quicksort Benchmark -----------------\n";
+        std::cout << "Starting benchmark...\n";
+
+        std::vector<BenchmarkResult> results = runAllBenchmarks(config);
+
+        std::size_t passed = 0;
+        std::size_t failed = 0;
+
+        for(const BenchmarkResult& result: results){
+            if(result.correctnessPassed){
+                ++passed;
+            }else{
+                ++failed;
+            }
+        }
+
+        writeDetailedResults(results, config);
+        writeDashboard(results, config);
+
+        std::cout << "\n----------------- Benchmark Summary -----------------\n";
+        std::cout << "Total runs: " << results.size() << "\n";
+        std::cout << "Passed: " << passed << "\n";
+        std::cout << "Failed: " << failed << "\n";
+
+        std::cout << "Results directory: " << config.outputDirectory << "\n";
+        std::cout << "CSV files generated: " << config.inputTypes.size() + 1 << '\n';
+
+        if(failed > 0){
+            std::cout << "Status: COMPLETED WITH FAILURES\n";
+            return 1;
+        }
+
+        std::cout << "Status: SUCCESS\n";
+        return 0;
+    }catch(const std::exception& e){
+        std::cerr << "Benchmark failed: " << e.what() << '\n';
+        return 1;
+    }
+}
 
 //main
 int main(){
-    std::cout << "Benchmark framework ready\n";
-
-    BenchmarkConfig config;
-
-    std::vector<BenchmarkResult> results = runAllBenchmarks(config);
-
-    writeDetailedResults(results, config);
-
-    std::size_t passed = 0;
-    std::size_t failed = 0;
-
-    for (const BenchmarkResult& result : results) {
-        if (result.correctnessPassed) {
-            ++passed;
-        } else {
-            ++failed;
-
-            std::cout << "FAILED: " << result.algorithmName << " / " << result.inputType << " / n=" << result.arraySize << " / mode=" << result.measurementMode << '\n';
-        }
-    }
-
-    std::cout << "Total records: " << results.size() << '\n';
-    std::cout << "Passed: " << passed << '\n';
-    std::cout << "Failed: " << failed << '\n';
-
-    writeDashboard(results, config);
-
-    return 0;
+    return runBenchmarProgram();
 }
