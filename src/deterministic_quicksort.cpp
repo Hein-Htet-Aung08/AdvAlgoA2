@@ -15,17 +15,16 @@ void deterministic_quicksort(std::vector<int> &input, int lowerLimit, int upperL
     if (lowerLimit >= upperLimit) {
         return;
     }
-    
+
     int pivot = input[upperLimit];
-    int boundary = lowerLimit - 1;
+    int boundary = lowerLimit;
     for (int i = lowerLimit; i <= upperLimit - 1; i++) {
         if (input[i] < pivot) {
-            boundary++;
             std::swap(input[boundary], input[i]);
+            boundary++;
         }
     }
-    std::swap(input[boundary + 1], input[upperLimit]);
-    boundary++;
+    std::swap(input[boundary], input[upperLimit]);
 
     //lower
     deterministic_quicksort(input, lowerLimit, boundary - 1);
