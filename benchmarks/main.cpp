@@ -488,7 +488,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         double meanComparisons = (analysisCount > 0) ? totalComparisons / analysisCount : 0.0;
         double meanSwaps = (analysisCount > 0) ? totalSwaps / analysisCount : 0.0;
         double meanDepth = (analysisCount > 0) ? totalDepth / analysisCount : 0.0;
-        double meanImbalance = (analysisCount > 0) ? totalImbalance / imbalanceCount : 0.0;
+        double meanImbalance = (imbalanceCount > 0) ? totalImbalance / imbalanceCount : 0.0;
 
         file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',' << stats.mean << ',' << stats.median << ',' << stats.standardDeviation << ',' << stats.minimum << ',' << stats.maximum << ',' << analysisCount << ',';
 
@@ -507,7 +507,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         }
         file << ',';
 
-        if(analysisCount > 0){
+        if(imbalanceCount > 0){
             file << meanImbalance;
         }
         file << '\n';
