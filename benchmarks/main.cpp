@@ -545,6 +545,8 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
 
         file << attempted << ',' << passed << ',' << failed << '\n';
     }
+
+    std::cout << "Created: " << filePath << '\n';
 }
 
 //Main benchmark algorithm
