@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <random>
+#include <algorithm>
+#include "../include/quicksort.hpp"
 
 void prtVec(std::vector<int> v) {
     for (int i : v) {
@@ -9,30 +11,42 @@ void prtVec(std::vector<int> v) {
     std::cout << '\n';
 }
 
-std::vector<int> randomized_quicksort(std::vector<int> input) {
-    input.push_back(4);
+void helperRDA(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt19937& gen){
+    if(upperLimit - lowerLimit <= 1) return;
+
+    std::uniform_int_distribution<int> distrib(lowerLimit, upperLimit-1);
+    int pivotIndex = distrib(gen);
+    std::swap(input[lowerLimit], input[pivotIndex]);
+
+    int pivot = input[lowerLimit];
+    int boundary = lowerLimit;
+
+    for(int i = lowerLimit + 1; i < upperLimit; ++i){
+        if(input[i] < pivot){
+            ++boundary;
+            std::swap(input[i], input[boundary]);
+        }
+    }
+
+    std::swap(input[lowerLimit], input[boundary]);
+
+    helperRDA(input, lowerLimit, boundary, gen);
+    helperRDA(input, boundary + 1, upperLimit, gen);
+}
+
+
+std::vector<int> randomized_quicksort(std::vector<int> input, unsigned int seed) {
+    std::mt19937 gen(seed);
+
+    helperRDA(input, 0, static_cast<int>(input.size()), gen);
+
     return input;
 }
 
-void helperRDA(std::vector<int>& input, int A, int low, int high){
-    if(low >= high) return;
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> distrib(low, high);   
-
-    int pivotIndex = distrib(gen);
-
-    
-}
-
 int main(int argc, char* argv[]) {
-    std::vector<int> test {0,1,2};
-    std::vector<int> output {randomized_quicksort(test)};
-    std::cout << (test == output) << '\n';
-    if (test != output) {
-        prtVec(test);
-        prtVec(output);
-    }
+    std::vector<int> test {5,4,3,2,3,2,0};
+    std::vector<int> sorted = randomized_quicksort(test, 42);
+    prtVec(test);
+    prtVec(sorted);
     return {};
 }
