@@ -129,6 +129,9 @@ std::vector<int> manyDuplicates(std::size_t size, unsigned int seed){
 }
 
 //All equal elements
+std::vector<int> allEqualElements(std::size_t size){
+    return std::vector<int>(size, 1);
+}
 
 //Run Benchmark algorithm
 
@@ -139,7 +142,7 @@ std::vector<int> manyDuplicates(std::size_t size, unsigned int seed){
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> test = manyDuplicates(10, 42);
+    std::vector<int> test = allEqualElements(10);
 
     for(int value: test){
         std::cout << value << " ";
