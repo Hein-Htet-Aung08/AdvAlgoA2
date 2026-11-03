@@ -87,6 +87,32 @@ std::vector<int> reverseSorted(std::size_t size){
 }
 
 //Nearly sorted
+std::vector<int> nearlySorted(std::size_t size, unsigned int seed){
+    std::vector<int> array = alreadySorted(size);
+
+    std::vector<std::size_t> indices;
+
+    for(std::size_t i = 0; i < size; ++i){
+        indices.push_back(static_cast<int>(i));
+    }
+    
+    std::mt19937 gen(seed);
+    std::shuffle(indices.begin(), indices.end(), gen);
+
+    std::size_t swapCount = size/4;
+
+    for(std::size_t x = 0; x < swapCount; ++x){
+        std::size_t i = indices[x];
+
+        if(i != size - 1){
+            std::swap(array[i], array[i+1]);
+        }else{
+            std::swap(array[i], array[i-1]);
+        }
+    }
+
+    return array;
+}
 
 //Many duplicates
 
@@ -101,15 +127,9 @@ std::vector<int> reverseSorted(std::size_t size){
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> sorted = alreadySorted(10);
-    std::vector<int> reversed = reverseSorted(10);
+    std::vector<int> test = nearlySorted(10, 42);
 
-    for(int value: sorted){
-        std::cout << value << " ";
-    }
-    std::cout << "\n";
-
-    for(int value: reversed){
+    for(int value: test){
         std::cout << value << " ";
     }
     std::cout << "\n";
