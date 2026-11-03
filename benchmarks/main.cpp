@@ -548,7 +548,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
 }
 
 //Main benchmark algorithm
-int runBenchmarProgram(){
+int runBenchmarkProgram(){
     try {
         BenchmarkConfig config;
 
@@ -594,5 +594,5 @@ int runBenchmarProgram(){
 
 //main
 int main(){
-    return runBenchmarProgram();
+    return runBenchmarkProgram();
 }
