@@ -155,7 +155,8 @@ BenchmarkResult runSingleBenchmark(
     const std::string& algorithmName,
     std::optional<unsigned int> inputSeed,
     std::optional<unsigned int> pivotSeed,
-    int repetitionNumber
+    int repetitionNumber,
+    const std::string& measurementMode
 ){
     BenchmarkResult result;
 
@@ -165,33 +166,41 @@ BenchmarkResult runSingleBenchmark(
     result.inputSeed = inputSeed;
     result.pivotSeed = pivotSeed;
     result.repetitionNumber = repetitionNumber;
-    result.measurementMode = "performance";
+    result.measurementMode = measurementMode;
 
     std::vector<int> workingArray = originalArray;
 
     std::vector<int> expectedArray = originalArray;
     std::sort(expectedArray.begin(), expectedArray.end());
 
-    auto start = std::chrono::steady_clock::now();
-    auto end = std::chrono::steady_clock::now();
+    if(measurementMode == "performance"){
+        auto start = std::chrono::steady_clock::now();
+        auto end = std::chrono::steady_clock::now();
 
-    if(algorithmName == "randomized"){
-        if(!pivotSeed.has_value()) throw std::invalid_argument("Randomized Quicksort requires a pivot seed.");
+        if(algorithmName == "randomized"){
 
-        start = std::chrono::steady_clock::now();
-        randomized_quicksort(workingArray, pivotSeed.value());
-        end = std::chrono::steady_clock::now();
-    }else if(algorithmName == "deterministic"){
-        start = std::chrono::steady_clock::now();
-        deterministic_quicksort_analysis(workingArray);
-        end = std::chrono::steady_clock::now();
+            if(!pivotSeed.has_value()) throw std::invalid_argument("Randomized Quicksort requires a pivot seed.");
+
+            start = std::chrono::steady_clock::now();
+            randomized_quicksort(workingArray, pivotSeed.value());
+            end = std::chrono::steady_clock::now();
+        }else if(algorithmName == "deterministic"){
+            start = std::chrono::steady_clock::now();
+            deterministic_quicksort_analysis(workingArray);
+            end = std::chrono::steady_clock::now();
+        }else{
+            throw std::invalid_argument("Unknown algorithm: " + algorithmName);
+        }
+
+        std::chrono::duration<double, std::milli> elapsed = end - start;
+
+        result.executionTimeMilliseconds = elapsed.count();
+
+    }else if(measurementMode == "analysis"){
+        
     }else{
-        throw std::invalid_argument("Unknown algorithm: " + algorithmName);
+        throw std::invalid_argument("Unknown measurement mode: " + measurementMode);
     }
-
-    std::chrono::duration<double, std::milli> elapsed = end - start;
-
-    result.executionTimeMilliseconds = elapsed.count();
 
     result.correctnessPassed = (workingArray == expectedArray);
     result.runStatus = result.correctnessPassed ? "PASS" : "FAIL";
