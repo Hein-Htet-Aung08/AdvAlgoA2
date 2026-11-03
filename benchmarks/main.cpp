@@ -303,10 +303,29 @@ int main(){
     std::cout << "Benchmark framework ready\n";
 
     BenchmarkConfig config;
+    config.counts = {100, 1000};
+    config.randomizedSeeds = {23};
+    config.pivotSeeds = {80, 40};
+    config.repetitions = 2;
 
     std::vector<BenchmarkResult> results = runAllBenchmarks(config);
 
-    std::cout << "Total results: " << results.size() << "\n";
+    std::size_t passed = 0;
+    std::size_t failed = 0;
+
+    for (const BenchmarkResult& result : results) {
+        if (result.correctnessPassed) {
+            ++passed;
+        } else {
+            ++failed;
+
+            std::cout << "FAILED: " << result.algorithmName << " / " << result.inputType << " / n=" << result.arraySize << " / mode=" << result.measurementMode << '\n';
+        }
+    }
+
+    std::cout << "Total records: " << results.size() << '\n';
+    std::cout << "Passed: " << passed << '\n';
+    std::cout << "Failed: " << failed << '\n';
 
     return 0;
 }
