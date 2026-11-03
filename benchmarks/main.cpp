@@ -4,8 +4,11 @@
 #include <cstdint>
 #include <vector>
 #include <cstddef>
+#include <algorithm>
+#include <numeric>
+#include <random>
 
-//Stucts
+//Stucts for this
 struct BenchmarkConfig {
     std::vector<std::size_t> counts {100, 1000, 5000, 10000};
     std::vector<unsigned int> randomizedSeeds {23, 48, 123321};
@@ -45,6 +48,19 @@ struct BenchmarkResult{
 };
 
 //Random arrays
+std::vector<int> randomArrays(std::size_t size, unsigned int seed){
+    std::vector<int> array;
+
+    for(std::size_t i = 0; i < size; ++i){
+        array.push_back(static_cast<int>(i + 1));
+    }
+
+    std::mt19937 gen(seed);
+
+    std::shuffle(array.begin(), array.end(), gen);
+
+    return array;
+}
 
 //Already sorted
 
@@ -64,5 +80,13 @@ struct BenchmarkResult{
 
 int main(){
     std::cout << "Benchmark framework ready\n";
+
+    std::vector<int> test = randomArrays(10, 42);
+
+    for(int value: test){
+        std::cout << value << " ";
+    }
+
+    std::cout << "\n";
     return 0;
 }
