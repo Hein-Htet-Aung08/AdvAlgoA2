@@ -157,7 +157,20 @@ BenchmarkResult runSingleBenchmark(
     std::optional<unsigned int> pivotSeed,
     int repetitionNumber
 ){
+    BenchmarkResult result;
 
+    result.inputType = inputType;
+    result.algorithmName = algorithmName;
+    result.arraySize = originalArray.size();
+    result.inputSeed = inputSeed;
+    result.pivotSeed = pivotSeed;
+    result.repetitionNumber = repetitionNumber;
+    result.measurementMode = "performance";
+
+    std::vector<int> workingArray = originalArray;
+
+    std::vector<int> expectedArray = originalArray;
+    std::sort(expectedArray.begin(), expectedArray.end());
 }
 
 //Write functions
