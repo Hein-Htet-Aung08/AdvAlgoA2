@@ -258,6 +258,16 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
 
                 std::cout << "Generated " << inputType << " (n=" << size << ")";
 
+                for(int repetition = 1; repetition <= config.repetitions; ++repetition){
+                    BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, repetition, "performance");
+
+                    results.push_back(performance);
+                }
+
+                BenchmarkResult analysis = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, 1, "analysis");
+
+                results.push_back(analysis);
+
                 if(inputSeed.has_value()){
                     std::cout << " seed=" << inputSeed.value();
                 }
