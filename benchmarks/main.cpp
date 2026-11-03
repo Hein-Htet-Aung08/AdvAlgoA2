@@ -9,6 +9,7 @@
 #include <random>
 #include <stdexcept>
 #include <chrono>
+#include "../include/randomized_quicksort.hpp"
 
 //Stucts for this
 struct BenchmarkConfig {
@@ -17,14 +18,6 @@ struct BenchmarkConfig {
     std::vector<unsigned int> pivotSeeds {80, 40, 62};
     int repetitions {3};
     std::string outputDirectory {"results/"};
-};
-
-struct SortMetrics{
-    std::uint64_t comparisons = 0;
-    std::uint64_t swaps = 0;
-    std::uint64_t maximumRecursionDepth = 0;
-    double partitionImbalanceSum = 0.0;
-    std::uint64_t partitionCount = 0;
 };
 
 struct BenchmarkResult{
@@ -163,7 +156,7 @@ BenchmarkResult runSingleBenchmark(
     std::optional<unsigned int> pivotSeed,
     int repetitionNumber
 ){
-    
+
 }
 
 //Write functions
