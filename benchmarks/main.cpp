@@ -236,6 +236,7 @@ BenchmarkResult runSingleBenchmark(
 
 std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
     std::vector<BenchmarkResult> results;
+    std::mt19937 scheduleGen(41052);
 
     for(const std::string& inputType: config.inputTypes){
         for(std::size_t size: config.counts){
@@ -257,23 +258,27 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
 
                 std::vector<int> originalArray = generateInput(inputType, size, inputSeed.value_or(0));
 
-                for(int repetition = 1; repetition <= config.repetitions; ++repetition){
-
-                    BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, repetition, "performance");
-                    results.push_back(performance);
-
+                std::vector<std::optional<unsigned int>> timingSchedule {std::nullopt};
+                for(unsigned int pivotSeed: config.pivotSeeds){
+                    timingSchedule.push_back(pivotSeed);
                 }
+
+                for(int repetition = 1; repetition <= config.repetitions; ++repetition){
+                    std::shuffle(timingSchedule.begin(), timingSchedule.end(), scheduleGen);
+
+                    for(std::optional<unsigned int> pivotSeed: timingSchedule){
+                        std::string algorithmName = pivotSeed.has_value() ? "randomized" : "deterministic";
+
+                        BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, algorithmName, inputSeed, pivotSeed, repetition, "performance");
+
+                        results.push_back(performance);
+                    }
+                }
+
                 BenchmarkResult analysis = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, 1, "analysis");
                 results.push_back(analysis);
 
                 for(unsigned int pivotSeed : config.pivotSeeds){
-
-                    for(int repetition = 1; repetition <= config.repetitions; ++repetition){
-
-                        BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, "randomized", inputSeed, pivotSeed, repetition, "performance");
-                        results.push_back(performance);
-
-                    }
 
                     BenchmarkResult analysis = runSingleBenchmark(originalArray, inputType, "randomized", inputSeed, pivotSeed, 1, "analysis");
                     results.push_back(analysis);
@@ -299,6 +304,7 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
 
 //Main benchmark algorithm
 
+//main
 int main(){
     std::cout << "Benchmark framework ready\n";
 
