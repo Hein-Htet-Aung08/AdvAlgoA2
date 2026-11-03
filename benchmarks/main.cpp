@@ -254,19 +254,33 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
             }
 
             for(std::optional<unsigned int> inputSeed: inputSeeds){
+
                 std::vector<int> originalArray = generateInput(inputType, size, inputSeed.value_or(0));
 
-                std::cout << "Generated " << inputType << " (n=" << size << ")";
-
                 for(int repetition = 1; repetition <= config.repetitions; ++repetition){
-                    BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, repetition, "performance");
 
+                    BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, repetition, "performance");
                     results.push_back(performance);
+
+                }
+                BenchmarkResult analysis = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, 1, "analysis");
+                results.push_back(analysis);
+
+                for(unsigned int pivotSeed : config.pivotSeeds){
+
+                    for(int repetition = 1; repetition <= config.repetitions; ++repetition){
+
+                        BenchmarkResult performance = runSingleBenchmark(originalArray, inputType, "randomized", inputSeed, pivotSeed, repetition, "performance");
+                        results.push_back(performance);
+
+                    }
+
+                    BenchmarkResult analysis = runSingleBenchmark(originalArray, inputType, "randomized", inputSeed, pivotSeed, 1, "analysis");
+                    results.push_back(analysis);
+
                 }
 
-                BenchmarkResult analysis = runSingleBenchmark(originalArray, inputType, "deterministic", inputSeed, std::nullopt, 1, "analysis");
-
-                results.push_back(analysis);
+                std::cout << "Generated " << inputType << " (n=" << size << ")";
 
                 if(inputSeed.has_value()){
                     std::cout << " seed=" << inputSeed.value();
