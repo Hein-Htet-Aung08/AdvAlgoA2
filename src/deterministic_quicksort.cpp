@@ -11,32 +11,33 @@ void prtVec(std::vector<int> v) {
     std::cout << '\n';
 }
 
-std::vector<int> deterministic_quicksort(std::vector<int> &input, int lowerLimit, int upperLimit) {
-    if (upperLimit - lowerLimit <= 1) {
-        return input;
+void deterministic_quicksort(std::vector<int> &input, int lowerLimit, int upperLimit) {
+    if (lowerLimit >= upperLimit) {
+        return;
     }
-    int pivot {input[lowerLimit]};
-    int boundary {lowerLimit};
-    for (int i {lowerLimit + 1} ; i < upperLimit ; i++) {
+    
+    int pivot = input[upperLimit];
+    int boundary = lowerLimit - 1;
+    for (int i = lowerLimit; i <= upperLimit - 1; i++) {
         if (input[i] < pivot) {
-            std::swap(input[i], input[boundary]);
             boundary++;
+            std::swap(input[boundary], input[i]);
         }
     }
+    std::swap(input[boundary + 1], input[upperLimit]);
+    boundary++;
 
     //lower
-    deterministic_quicksort(input, lowerLimit, boundary);
-
+    deterministic_quicksort(input, lowerLimit, boundary - 1);
+    
     //upper
     deterministic_quicksort(input, boundary + 1, upperLimit);
-    
-    return input;
 }
-
-int main(int argc, char* argv[]) {
-    std::fstream inputFile ("./src/input");
-    if (!inputFile.is_open()) {
-        std::cout << "file bonton\n";
+    
+    int main(int argc, char* argv[]) {
+        std::fstream inputFile ("./src/input");
+        if (!inputFile.is_open()) {
+            std::cout << "file bonton\n";
         return {0};
     }
 
@@ -52,14 +53,14 @@ int main(int argc, char* argv[]) {
     std::vector<int> sorted {input};
     std::sort(sorted.begin(), sorted.end());
 
-    std::vector<int> output {deterministic_quicksort(input, 0, (int)input.size())};
-    if (sorted == output) {
+    deterministic_quicksort(input, 0, (int)input.size()-1);
+    if (sorted == input) {
         std::cout << "Match!\n";
     } else {
         std::cout << "Mismatch!\nStd: ";
-        prtVec(sorted);
-        std::cout << "Dtm: ";
-        prtVec(output);
     }
+    prtVec(sorted);
+    std::cout << "Dtm: ";
+    prtVec(input);
     return {};
 }
