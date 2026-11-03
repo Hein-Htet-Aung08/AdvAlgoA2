@@ -462,7 +462,13 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     file << std::setprecision(15);
     file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,mean_partition_imbalance,attempted_runs,passed_runs,failed_runs\n";
 
-    for(const auto& [key, times]: timings){
+    for(const auto& [key, attempted]: attemptedRuns){
+        std::vector<double> times;
+
+        auto timingIt = timings.find(key);
+
+        if(timingIt != timings.end()) times = timingIt->second;
+
         TimingStats stats = calculateTimingStats(times);
 
         const auto& [inputType, algorithmName, arraySize] = key;
@@ -495,7 +501,32 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         double meanDepth = (analysisCount > 0) ? totalDepth / analysisCount : 0.0;
         double meanImbalance = (imbalanceCount > 0) ? totalImbalance / imbalanceCount : 0.0;
 
-        file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',' << stats.mean << ',' << stats.median << ',' << stats.standardDeviation << ',' << stats.minimum << ',' << stats.maximum << ',' << analysisCount << ',';
+        file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',';
+
+        if(stats.sampleCount > 0){
+            file << stats.mean;
+        }
+        file << ',';
+
+        if(stats.sampleCount > 0){
+            file << stats.median;
+        }
+        file << ',';
+        
+        if(stats.sampleCount > 1){
+            file << stats.standardDeviation;
+        }
+        file << ',';
+
+        if(stats.sampleCount > 0){
+            file << stats.minimum;
+        }
+        file << ',';
+
+        if(stats.sampleCount > 0){
+            file << stats.maximum;
+        }
+        file << ',';
 
         if(analysisCount > 0){
             file << meanComparisons;
