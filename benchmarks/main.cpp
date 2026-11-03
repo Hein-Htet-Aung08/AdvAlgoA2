@@ -115,6 +115,18 @@ std::vector<int> nearlySorted(std::size_t size, unsigned int seed){
 }
 
 //Many duplicates
+std::vector<int> manyDuplicates(std::size_t size, unsigned int seed){
+    std::vector<int> array;
+
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<int> distrib(0, 9);
+
+    for(std::size_t i = 0; i < size; ++i){
+        array.push_back(distrib(gen));
+    }
+
+    return array;
+}
 
 //All equal elements
 
@@ -127,7 +139,7 @@ std::vector<int> nearlySorted(std::size_t size, unsigned int seed){
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> test = nearlySorted(10, 42);
+    std::vector<int> test = manyDuplicates(10, 42);
 
     for(int value: test){
         std::cout << value << " ";
