@@ -11,7 +11,7 @@ void prtVec(std::vector<int> v) {
     std::cout << '\n';
 }
 
-void helperRDA(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt19937& gen){
+void randomizedQSHelper(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt19937& gen){
     if(lowerLimit >= upperLimit) return;
 
     std::uniform_int_distribution<int> distrib(lowerLimit, upperLimit);
@@ -30,11 +30,11 @@ void helperRDA(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt1
 
     std::swap(input[boundary], input[upperLimit]);
 
-    helperRDA(input, lowerLimit, boundary - 1, gen);
-    helperRDA(input, boundary + 1, upperLimit, gen);
+    randomizedQSHelper(input, lowerLimit, boundary - 1, gen);
+    randomizedQSHelper(input, boundary + 1, upperLimit, gen);
 }
 
-void helperRDAAnalysis(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt19937& gen, SortMetrics& metrics, std::uint64_t depth){
+void randomizedQSHelperAnalysis(std::vector<int>& input, int lowerLimit, int upperLimit, std::mt19937& gen, SortMetrics& metrics, std::uint64_t depth){
     metrics.maximumRecursionDepth = std::max(metrics.maximumRecursionDepth, depth);
 
     if(lowerLimit >= upperLimit) return;
@@ -71,14 +71,14 @@ void helperRDAAnalysis(std::vector<int>& input, int lowerLimit, int upperLimit, 
         ++metrics.partitionCount;
     }
 
-    helperRDAAnalysis(input, lowerLimit, boundary-1, gen, metrics, depth+1);
-    helperRDAAnalysis(input, boundary+1, upperLimit, gen, metrics, depth+1);
+    randomizedQSHelperAnalysis(input, lowerLimit, boundary-1, gen, metrics, depth+1);
+    randomizedQSHelperAnalysis(input, boundary+1, upperLimit, gen, metrics, depth+1);
 }
 
 std::vector<int> randomized_quicksort(std::vector<int> input, unsigned int seed) {
     std::mt19937 gen(seed);
 
-    helperRDA(input, 0, static_cast<int>(input.size()) - 1, gen);
+    randomizedQSHelper(input, 0, static_cast<int>(input.size()) - 1, gen);
 
     return input;
 }
@@ -88,7 +88,7 @@ AnalysisResult randomized_quicksort_analysis(std::vector<int> input, unsigned in
     AnalysisResult analysisResult;
     SortMetrics metrics;
 
-    helperRDAAnalysis(input, 0, static_cast<int>(input.size()) - 1, gen, metrics, 1);
+    randomizedQSHelperAnalysis(input, 0, static_cast<int>(input.size()) - 1, gen, metrics, 1);
 
     analysisResult.sortedArray = input;
     analysisResult.metrics = metrics;
