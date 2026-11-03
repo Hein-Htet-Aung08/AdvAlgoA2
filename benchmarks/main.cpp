@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <map>
 #include <tuple>
+#include <cmath>
 #include "../include/randomized_quicksort.hpp"
 #include "../include/deterministic_quicksort.hpp"
 
@@ -385,6 +386,42 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
 
 }
 
+TimingStats calculateTimingStats(std::vector<double> times){
+    TimingStats stats;
+
+    if(times.empty()) return stats;
+
+    std::sort(times.begin(), times.end());
+
+    stats.sampleCount = times.size();
+    stats.minimum = times.front();
+    stats.maximum = times.back();
+
+    double sum = std::accumulate(times.begin(), times.end(), 0.0);
+    stats.mean = sum / times.size();
+
+    std::size_t middle = times.size()/2;
+
+    if(times.size()%2 == 0){
+        stats.median = (times[middle - 1] + times[middle]) / 2.0;
+    }else{
+        stats.median = times[middle];
+    }
+
+    double squaredDifferenceSum = 0.0;
+
+    for(double time: times){
+        double difference = time - stats.mean;
+        squaredDifferenceSum += difference * difference;
+    }
+
+    if(times.size() > 1){
+        stats.standardDeviation = std::sqrt(squaredDifferenceSum / (times.size() - 1));
+    }
+
+    return stats;
+}
+
 void writeDashboard(const std::vector<BenchmarkResult>& results, const BenchmarkConfig& config){
     using GroupKey = std::tuple<std::string, std::string, std::size_t>;
 
@@ -403,6 +440,14 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     }
 
     std::cout << "Dashboard timing groups: " << timings.size() << '\n';
+
+    for(const auto& [key, times]: timings){
+        TimingStats stats = calculateTimingStats(times);
+
+        const auto& [inputType, algorithmName, arraySize] = key;
+
+        std::cout << inputType << " / " << algorithmName << " / n=" << arraySize << " / samples=" << stats.sampleCount << " / mean=" << stats.mean << " ms / median=" << stats.median << " ms / standard deviation=" << stats.standardDeviation << " ms\n";
+    }
 }
 
 //Main benchmark algorithm
