@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include "../include/deterministic_quicksort.hpp"
 
 void prtVec(std::vector<int> v) {
     for (int i : v) {
@@ -32,9 +33,15 @@ void deterministic_quicksort(std::vector<int> &input, int lowerLimit, int upperL
     //upper
     deterministic_quicksort(input, boundary + 1, upperLimit);
 }
+
+std::vector<int> deterministic_quicksort_benchmark(std::vector<int> input){
+    deterministic_quicksort(input, 0, static_cast<int>(input.size()) - 1);
+
+    return input;
+}
     
-    int main(int argc, char* argv[]) {
-        std::fstream inputFile ("./src/input");
+int main(int argc, char* argv[]) {
+    std::fstream inputFile ("./src/input");
         if (!inputFile.is_open()) {
             std::cout << "file bonton\n";
         return {0};
