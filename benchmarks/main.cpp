@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <numeric>
 #include <random>
+#include <stdexcept>
 
 //Stucts for this
 struct BenchmarkConfig {
@@ -133,6 +134,25 @@ std::vector<int> allEqualElements(std::size_t size){
     return std::vector<int>(size, 1);
 }
 
+//generate input function
+std::vector<int> generateInput(const std::string& inputType, std::size_t size, unsigned int seed = 0){
+    if(inputType == "random"){
+        return randomArrays(size, seed);
+    }else if(inputType == "sorted"){
+        return alreadySorted(size);
+    }else if(inputType == "reverse"){
+        return reverseSorted(size);
+    }else if(inputType == "nearly_sorted"){
+        return nearlySorted(size, seed);
+    }else if(inputType == "many_duplicates"){
+        return manyDuplicates(size, seed);
+    }else if(inputType == "all_equal"){
+        return allEqualElements(size);
+    }
+
+    throw std::invalid_argument("Unknown input type: " + inputType);
+}
+
 //Run Benchmark algorithm
 
 //Write functions
@@ -142,7 +162,7 @@ std::vector<int> allEqualElements(std::size_t size){
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> test = allEqualElements(10);
+    std::vector<int> test = generateInput("many_duplicates", 20, 42);
 
     for(int value: test){
         std::cout << value << " ";
