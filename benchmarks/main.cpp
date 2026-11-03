@@ -528,6 +528,8 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         }
         file << ',';
 
+        file << analysisCount << ',';
+
         if(analysisCount > 0){
             file << meanComparisons;
         }
@@ -548,7 +550,6 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         }
         file << ',';
 
-        std::size_t attempted = attemptedRuns[key];
         std::size_t failed = failedRuns[key];
         std::size_t passed = attempted - failed;
 
