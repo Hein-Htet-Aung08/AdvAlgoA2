@@ -240,6 +240,31 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
     for(const std::string& inputType: config.inputTypes){
         for(std::size_t size: config.counts){
             std::cout << "Processing " << inputType << " (n=" << size << ")\n";
+
+            bool requiresSeed = inputType == "random" || inputType == "nearly_sorted" || inputType=="many_duplicates";
+
+            std::vector<std::optional<unsigned int>> inputSeeds;
+
+            if(requiresSeed){
+                for(unsigned int seed: config.randomizedSeeds){
+                    inputSeeds.push_back(seed);
+                }
+            }else{
+                inputSeeds.push_back(std::nullopt);
+            }
+
+            for(std::optional<unsigned int> inputSeed: inputSeeds){
+                std::vector<int> originalArray = generateInput(inputType, size, inputSeed.value_or(0));
+
+                std::cout << "Generated " << inputType << " (n=" << size << ")";
+
+                if(inputSeed.has_value()){
+                    std::cout << " seed=" << inputSeed.value();
+                }
+
+                std::cout << '\n';
+
+            }
         }
     }
 
