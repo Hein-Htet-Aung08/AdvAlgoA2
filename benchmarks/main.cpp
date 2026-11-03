@@ -186,7 +186,7 @@ BenchmarkResult runSingleBenchmark(
             end = std::chrono::steady_clock::now();
         }else if(algorithmName == "deterministic"){
             start = std::chrono::steady_clock::now();
-            deterministic_quicksort_analysis(workingArray);
+            deterministic_quicksort_benchmark(workingArray);
             end = std::chrono::steady_clock::now();
         }else{
             throw std::invalid_argument("Unknown algorithm: " + algorithmName);
@@ -216,9 +216,9 @@ int main(){
 
     std::vector<int> test = generateInput("random", 1000, 42);
 
-    BenchmarkResult deterministic = runSingleBenchmark(test, "random", "deterministic", 42, std::nullopt, 1);
+    BenchmarkResult deterministic = runSingleBenchmark(test, "random", "deterministic", 42, std::nullopt, 1, "performance");
 
-    BenchmarkResult randomized = runSingleBenchmark(test, "random", "randomized", 42, 80, 1);
+    BenchmarkResult randomized = runSingleBenchmark(test, "random", "randomized", 42, 80, 1, "performance");
 
     std::cout << "Deterministic QS:\n";
     std::cout << "Time: " << deterministic.executionTimeMilliseconds.value() << " ms\n";
