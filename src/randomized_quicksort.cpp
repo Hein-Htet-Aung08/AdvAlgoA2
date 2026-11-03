@@ -1,3 +1,6 @@
+// Primary author: Hein Htet Aung
+// Algorithm: Randomized Quicksort
+
 #include <vector>
 #include <iostream>
 #include <random>
