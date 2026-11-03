@@ -9,6 +9,7 @@
 #include <random>
 #include <stdexcept>
 #include <chrono>
+#include <utility>
 #include "../include/randomized_quicksort.hpp"
 #include "../include/deterministic_quicksort.hpp"
 
@@ -197,7 +198,32 @@ BenchmarkResult runSingleBenchmark(
         result.executionTimeMilliseconds = elapsed.count();
 
     }else if(measurementMode == "analysis"){
-        
+        AnalysisResult analysisResult;
+
+        if(algorithmName == "randomized"){
+            if(!pivotSeed.has_value()){
+                throw std::invalid_argument("Randomized Quicksort requires a pivot seed.");
+            }
+
+            analysisResult = randomized_quicksort_analysis(originalArray, pivotSeed.value());
+        }else if(algorithmName == "deterministic"){
+            analysisResult = deterministic_quicksort_analysis(originalArray);
+        }else{
+            throw std::invalid_argument("Unknown algorithm: " + algorithmName);
+        }
+
+        if(analysisResult.sortedArray == expectedArray){
+            result.comparisons = analysisResult.metrics.comparisons;
+            result.swaps = analysisResult.metrics.swaps;
+            result.maximumRecursionDepth = analysisResult.metrics.maximumRecursionDepth;
+
+            if(analysisResult.metrics.partitionCount > 0){
+                result.meanPartitionImbalance = analysisResult.metrics.partitionImbalanceSum / analysisResult.metrics.partitionCount;
+            }
+        }
+
+        workingArray = std::move(analysisResult.sortedArray);
+
     }else{
         throw std::invalid_argument("Unknown measurement mode: " + measurementMode);
     }
@@ -227,6 +253,14 @@ int main(){
     std::cout << "\nRandomized QS:\n";
     std::cout << "Time: " << randomized.executionTimeMilliseconds.value() << " ms\n";
     std::cout << "Correct: " << randomized.correctnessPassed << "\n";
+
+    BenchmarkResult analysis = runSingleBenchmark(test, "random", "randomized", 42, 80, 1, "analysis");
+
+    std::cout << "\nAnalysis QS:\n";
+    std::cout << "Correct: " << analysis.correctnessPassed << '\n';
+    std::cout << "Comparisons: " << analysis.comparisons.value() << '\n';
+    std::cout << "Swaps: " << analysis.swaps.value() << '\n';
+    std::cout << "Depth: " << analysis.maximumRecursionDepth.value() << '\n';
 
     return 0;
 }
