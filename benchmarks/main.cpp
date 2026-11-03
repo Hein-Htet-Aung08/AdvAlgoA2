@@ -10,6 +10,9 @@
 #include <stdexcept>
 #include <chrono>
 #include <utility>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
 #include "../include/randomized_quicksort.hpp"
 #include "../include/deterministic_quicksort.hpp"
 
@@ -301,6 +304,23 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
 }
 
 //Write functions
+void writeDetailedResults(const std::vector<BenchmarkResult>& results, const BenchmarkConfig& config){
+
+    std::filesystem::create_directories(config.outputDirectory);
+
+    for(const std::string& inputType: config.inputTypes){
+        std::string filePath = config.outputDirectory + inputType + ".csv";
+
+        std::ofstream file(filePath);
+
+        if(!file.is_open()){
+            throw std::runtime_error("Cannot create CSV file: " + filePath);
+        }
+
+        std::cout << "Created: " << filePath << '\n';
+    }
+
+}
 
 //Main benchmark algorithm
 
@@ -315,6 +335,8 @@ int main(){
     config.repetitions = 2;
 
     std::vector<BenchmarkResult> results = runAllBenchmarks(config);
+
+    writeDetailedResults(results, config);
 
     std::size_t passed = 0;
     std::size_t failed = 0;
