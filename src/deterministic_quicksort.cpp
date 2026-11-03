@@ -71,7 +71,7 @@ void deterministicQSHelperAnalysis(std::vector<int>& input, int lowerLimit, int 
     deterministicQSHelperAnalysis(input, boundary + 1, upperLimit, metrics, depth + 1);
 }
 
-std::vector<int> deterministic_quicksort_benchmark(std::vector<int> input){
+std::vector<int> deterministic_quicksort_benchmark(std::vector<int>& input){
     deterministic_quicksort(input, 0, static_cast<int>(input.size()) - 1);
 
     return input;
@@ -124,7 +124,8 @@ int main(int argc, char* argv[]) {
 
     std::cout << "..............Wrapper testers..............\n";
     
-    std::vector<int> result = deterministic_quicksort_benchmark(input4WrapperTest);
+    std::vector<int> result {input4WrapperTest};
+    deterministic_quicksort_benchmark(result);
     AnalysisResult analysisResult = deterministic_quicksort_analysis(input4WrapperTest);
 
     std::cout << "Input: ";

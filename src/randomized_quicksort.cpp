@@ -75,7 +75,7 @@ void randomizedQSHelperAnalysis(std::vector<int>& input, int lowerLimit, int upp
     randomizedQSHelperAnalysis(input, boundary+1, upperLimit, gen, metrics, depth+1);
 }
 
-std::vector<int> randomized_quicksort(std::vector<int> input, unsigned int seed) {
+std::vector<int> randomized_quicksort(std::vector<int>& input, const unsigned int& seed) {
     std::mt19937 gen(seed);
 
     randomizedQSHelper(input, 0, static_cast<int>(input.size()) - 1, gen);
@@ -83,7 +83,7 @@ std::vector<int> randomized_quicksort(std::vector<int> input, unsigned int seed)
     return input;
 }
 
-AnalysisResult randomized_quicksort_analysis(std::vector<int> input, unsigned int seed){
+AnalysisResult randomized_quicksort_analysis(std::vector<int> input, const unsigned int& seed){
     std::mt19937 gen(seed);
     AnalysisResult analysisResult;
     SortMetrics metrics;
@@ -98,7 +98,8 @@ AnalysisResult randomized_quicksort_analysis(std::vector<int> input, unsigned in
 
 int main(int argc, char* argv[]) {
     std::vector<int> test {3,5,2,4,1};
-    std::vector<int> sorted = randomized_quicksort(test, 1233);
+    std::vector<int> sorted {test};
+    randomized_quicksort(sorted, 1233);
     AnalysisResult analysisResult = randomized_quicksort_analysis(test, 1233);
 
     prtVec(test);
