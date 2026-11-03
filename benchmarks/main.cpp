@@ -439,6 +439,27 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         }
     }
 
+    std::filesystem::create_directories(config.outputDirectory);
+
+    std::filesystem::path filePath = std::filesystem::path(config.outputDirectory) / "dashboard.csv";
+
+    std::ofstream file(filePath);
+
+    if(!file.is_open()){
+        throw std::runtime_error("Cannot create dashboard.csv");
+    }
+
+    file << std::setprecision(15);
+    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms\n";
+
+    for(const auto& [key, times]: timings){
+        TimingStats stats = calculateTimingStats(times);
+
+        const auto& [inputType, algorithmName, arraySize] = key;
+
+        file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',' << stats.mean << ',' << stats.median << ',' << stats.standardDeviation << ',' << stats.minimum << ',' << stats.maximum << '\n';
+    }
+
     std::cout << "Dashboard timing groups: " << timings.size() << '\n';
 
     for(const auto& [key, times]: timings){
