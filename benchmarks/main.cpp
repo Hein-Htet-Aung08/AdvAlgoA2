@@ -426,6 +426,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     using GroupKey = std::tuple<std::string, std::string, std::size_t>;
 
     std::map<GroupKey, std::vector<double>> timings;
+    std::map<GroupKey, std::vector<const BenchmarkResult*>> analysisGroups;
 
     for(const BenchmarkResult& result: results){
         if(!result.correctnessPassed){
@@ -436,6 +437,10 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
 
         if(result.measurementMode == "performance" && result.executionTimeMilliseconds.has_value()){
             timings[key].push_back(result.executionTimeMilliseconds.value());
+        }
+
+        if(result.measurementMode == "analysis"){
+            analysisGroups[key].push_back(&result);
         }
     }
 
@@ -450,25 +455,65 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     }
 
     file << std::setprecision(15);
-    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms\n";
+    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,mean_partition_imbalance\n";
 
     for(const auto& [key, times]: timings){
         TimingStats stats = calculateTimingStats(times);
 
         const auto& [inputType, algorithmName, arraySize] = key;
 
-        file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',' << stats.mean << ',' << stats.median << ',' << stats.standardDeviation << ',' << stats.minimum << ',' << stats.maximum << '\n';
+        double totalComparisons = 0.0;
+        double totalSwaps = 0.0;
+        double totalDepth = 0.0;
+        double totalImbalance = 0.0;
+
+        std::size_t analysisCount = 0;
+        std::size_t imbalanceCount = 0;
+
+        for(const BenchmarkResult* analysis: analysisGroups[key]){
+            if(analysis->comparisons.has_value() && analysis->swaps.has_value() && analysis->maximumRecursionDepth.has_value()){
+                totalComparisons += analysis->comparisons.value();
+                totalSwaps += analysis->swaps.value();
+                totalDepth += analysis->maximumRecursionDepth.value();
+
+                ++analysisCount;
+            }
+
+            if(analysis->meanPartitionImbalance.has_value()){
+                totalImbalance += analysis->meanPartitionImbalance.value();
+                ++imbalanceCount;
+            }
+        }
+
+        double meanComparisons = (analysisCount > 0) ? totalComparisons / analysisCount : 0.0;
+        double meanSwaps = (analysisCount > 0) ? totalSwaps / analysisCount : 0.0;
+        double meanDepth = (analysisCount > 0) ? totalDepth / analysisCount : 0.0;
+        double meanImbalance = (analysisCount > 0) ? totalImbalance / imbalanceCount : 0.0;
+
+        file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',' << stats.mean << ',' << stats.median << ',' << stats.standardDeviation << ',' << stats.minimum << ',' << stats.maximum << ',' << analysisCount << ',';
+
+        if(analysisCount > 0){
+            file << meanComparisons;
+        }
+        file << ',';
+
+        if(analysisCount > 0){
+            file << meanSwaps;
+        }
+        file << ',';
+
+        if(analysisCount > 0){
+            file << meanDepth;
+        }
+        file << ',';
+
+        if(analysisCount > 0){
+            file << meanImbalance;
+        }
+        file << '\n';
     }
 
     std::cout << "Dashboard timing groups: " << timings.size() << '\n';
-
-    for(const auto& [key, times]: timings){
-        TimingStats stats = calculateTimingStats(times);
-
-        const auto& [inputType, algorithmName, arraySize] = key;
-
-        std::cout << inputType << " / " << algorithmName << " / n=" << arraySize << " / samples=" << stats.sampleCount << " / mean=" << stats.mean << " ms / median=" << stats.median << " ms / standard deviation=" << stats.standardDeviation << " ms\n";
-    }
 }
 
 //Main benchmark algorithm
