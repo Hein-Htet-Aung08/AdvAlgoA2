@@ -63,8 +63,28 @@ std::vector<int> randomArrays(std::size_t size, unsigned int seed){
 }
 
 //Already sorted
+std::vector<int> alreadySorted(std::size_t size){
+    std::vector<int> array;
+    
+    for(std::size_t i = 0; i < size; ++i){
+        array.push_back(static_cast<int>(i+1));
+    }
+
+    return(array);
+}
 
 //Reverse sorted
+std::vector<int> reverseSorted(std::size_t size){
+    std::vector<int> array;
+
+    int i = size;
+    do{
+        array.push_back(i);
+        --i;
+    }while(i > 0);
+
+    return array;
+}
 
 //Nearly sorted
 
@@ -81,12 +101,18 @@ std::vector<int> randomArrays(std::size_t size, unsigned int seed){
 int main(){
     std::cout << "Benchmark framework ready\n";
 
-    std::vector<int> test = randomArrays(10, 42);
+    std::vector<int> sorted = alreadySorted(10);
+    std::vector<int> reversed = reverseSorted(10);
 
-    for(int value: test){
+    for(int value: sorted){
         std::cout << value << " ";
     }
-
     std::cout << "\n";
+
+    for(int value: reversed){
+        std::cout << value << " ";
+    }
+    std::cout << "\n";
+
     return 0;
 }
