@@ -50,7 +50,7 @@ struct BenchmarkResult{
     std::optional<std::uint64_t> comparisons;
     std::optional<std::uint64_t> swaps;
     std::optional<std::uint64_t> maximumRecursionDepth;
-    std::optional<double> meanPartitionImbalance;
+    std::optional<double> initialPartitionImbalance;
 
     bool correctnessPassed = false;
     std::string runStatus;
@@ -239,10 +239,9 @@ BenchmarkResult runSingleBenchmark(
             result.swaps = analysisResult.metrics.swaps;
             result.maximumRecursionDepth = analysisResult.metrics.maximumRecursionDepth;
 
-            if(analysisResult.metrics.partitionCount > 0){
-                result.meanPartitionImbalance = analysisResult.metrics.partitionImbalanceSum / analysisResult.metrics.partitionCount;
-            }
-        }
+        result.initialPartitionImbalance = analysisResult.metrics.partitionImbalance;
+        
+    }
 
         workingArray = std::move(analysisResult.sortedArray);
 
@@ -341,7 +340,7 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
 
         file << std::setprecision(15);
 
-        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,mean_partition_imbalance,correctness_passed,run_status\n";
+        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,initial_partition_imbalance,correctness_passed,run_status\n";
 
         for(const BenchmarkResult& result: results){
             if(result.inputType != inputType){
@@ -382,8 +381,8 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
             }
             file << ',';
 
-            if(result.meanPartitionImbalance.has_value()){
-                file << result.meanPartitionImbalance.value();
+            if(result.initialPartitionImbalance.has_value()){
+                file << result.initialPartitionImbalance.value();
             }
             file << ',';
 
@@ -469,7 +468,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     }
 
     file << std::setprecision(15);
-    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,mean_partition_imbalance,attempted_runs,passed_runs,failed_runs\n";
+    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,initial_partition_imbalance,attempted_runs,passed_runs,failed_runs\n";
 
     for(const auto& [key, attempted]: attemptedRuns){
         std::vector<double> times;
@@ -499,8 +498,8 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
                 ++analysisCount;
             }
 
-            if(analysis->meanPartitionImbalance.has_value()){
-                totalImbalance += analysis->meanPartitionImbalance.value();
+            if(analysis->initialPartitionImbalance.has_value()){
+                totalImbalance += analysis->initialPartitionImbalance.value();
                 ++imbalanceCount;
             }
         }

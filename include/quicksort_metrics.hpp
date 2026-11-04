@@ -8,8 +8,7 @@ struct SortMetrics{
     std::uint64_t swaps = 0;
     std::uint64_t maximumRecursionDepth = 0;
 
-    double partitionImbalanceSum = 0.0;
-    std::uint64_t partitionCount = 0;
+    double partitionImbalance = 0.0;
 };
 
 struct AnalysisResult {
