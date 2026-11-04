@@ -21,11 +21,12 @@
 
 //Stucts for this
 struct BenchmarkConfig {
-    std::vector<std::size_t> counts {100, 1000, 5000, 10000};
-    std::vector<unsigned int> randomizedSeeds {23, 48, 123321};
+    std::vector<std::size_t> arraySize {100, 1000, 5000, 10000};
+    // std::vector<unsigned int> randomizedSeeds {23, 48, 123321,2923};
+    std::vector<unsigned int> randomizedSeeds {4020006181, 3572205801, 693963546, 1533451385, 1727316755};
     std::vector<unsigned int> pivotSeeds {80, 40, 62};
     std::vector<std::string> inputTypes {"random", "sorted", "reverse", "nearly_sorted", "many_duplicates", "all_equal"};
-    int repetitions {3};
+    int repetitions {5};
     std::string outputDirectory {"results/"};
 };
 
@@ -255,7 +256,7 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
     std::mt19937 scheduleGen(41052);
 
     for(const std::string& inputType: config.inputTypes){
-        for(std::size_t size: config.counts){
+        for(std::size_t size: config.arraySize){
 
             bool requiresSeed = inputType == "random" || inputType == "nearly_sorted" || inputType=="many_duplicates";
 
