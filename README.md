@@ -4,5 +4,6 @@ This is a repository for the submission of Advanced Algorithms (41052 - UTS) Ass
 
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release    
 cmake --build build
+./build/benchmark
 
 Use this command to compile and run CMakeList.
