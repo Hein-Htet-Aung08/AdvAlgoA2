@@ -340,7 +340,7 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
 
         file << std::setprecision(15);
 
-        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,initial_partition_imbalance,correctness_passed,run_status\n";
+        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,mean_initial_partition_imbalance,correctness_passed,run_status\n";
 
         for(const BenchmarkResult& result: results){
             if(result.inputType != inputType){
@@ -507,7 +507,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         double meanComparisons = (analysisCount > 0) ? totalComparisons / analysisCount : 0.0;
         double meanSwaps = (analysisCount > 0) ? totalSwaps / analysisCount : 0.0;
         double meanDepth = (analysisCount > 0) ? totalDepth / analysisCount : 0.0;
-        double meanImbalance = (imbalanceCount > 0) ? totalImbalance / imbalanceCount : 0.0;
+        double meanInitialImbalance = (imbalanceCount > 0) ? totalImbalance / imbalanceCount : 0.0;
 
         file << inputType << ',' << algorithmName << ',' << arraySize << ',' << stats.sampleCount << ',';
 
@@ -554,7 +554,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
         file << ',';
 
         if(imbalanceCount > 0){
-            file << meanImbalance;
+            file << meanInitialImbalance;
         }
         file << ',';
 
