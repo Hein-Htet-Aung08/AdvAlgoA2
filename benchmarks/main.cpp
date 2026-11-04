@@ -24,7 +24,7 @@
 
 //Stucts for this
 struct BenchmarkConfig {
-    std::vector<std::size_t> arraySize {100, 1000, 5000, 10000};
+    std::vector<std::size_t> arraySize {100, 1000, 5000, 10000, 15000};
     // std::vector<unsigned int> randomizedSeeds {23, 48, 123321,2923};
     std::vector<unsigned int> randomizedSeeds {4020006181, 3572205801, 693963546, 1533451385, 1727316755};
     std::vector<unsigned int> pivotSeeds {4393318, 3257601471, 469755461, 804904386, 3853312017};
