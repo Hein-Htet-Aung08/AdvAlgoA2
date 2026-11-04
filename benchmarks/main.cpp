@@ -25,6 +25,7 @@ struct BenchmarkConfig {
     std::vector<unsigned int> randomizedSeeds {23, 48, 123321};
     std::vector<unsigned int> pivotSeeds {80, 40, 62};
     std::vector<std::string> inputTypes {"random", "sorted", "reverse", "nearly_sorted", "many_duplicates", "all_equal"};
+    int warmupRepetitions {5};
     int repetitions {3};
     std::string outputDirectory {"results/"};
 };
@@ -276,6 +277,20 @@ std::vector<BenchmarkResult> runAllBenchmarks(const BenchmarkConfig& config){
                 std::vector<std::optional<unsigned int>> timingSchedule {std::nullopt};
                 for(unsigned int pivotSeed: config.pivotSeeds){
                     timingSchedule.push_back(pivotSeed);
+                }
+
+                for(int warmup = 0; warmup < config.warmupRepetitions; ++warmup){
+                    std::shuffle(timingSchedule.begin(), timingSchedule.end(), scheduleGen);
+
+                    for(std::optional<unsigned int> pivotSeed: timingSchedule){
+                        std::string algorithmName = pivotSeed.has_value() ? "randomized" : "deterministic";
+
+                        BenchmarkResult warmupResult = runSingleBenchmark(originalArray, inputType, algorithmName, inputSeed, pivotSeed, 0, "performance");
+
+                        if(!warmupResult.correctnessPassed){
+                            throw std::runtime_error("Correctness failure during benchmark warm-up.");
+                        }
+                    }
                 }
 
                 for(int repetition = 1; repetition <= config.repetitions; ++repetition){
