@@ -340,7 +340,7 @@ void writeDetailedResults(const std::vector<BenchmarkResult>& results, const Ben
 
         file << std::setprecision(15);
 
-        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,mean_initial_partition_imbalance,correctness_passed,run_status\n";
+        file << "input_type,algorithm,array_size,input_seed,pivot_seed,repetition,measurement_mode,execution_time_ms,comparisons,swaps,max_recursion_depth,initial_partition_imbalance,correctness_passed,run_status\n";
 
         for(const BenchmarkResult& result: results){
             if(result.inputType != inputType){
@@ -468,7 +468,7 @@ void writeDashboard(const std::vector<BenchmarkResult>& results, const Benchmark
     }
 
     file << std::setprecision(15);
-    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,initial_partition_imbalance,attempted_runs,passed_runs,failed_runs\n";
+    file << "input_type,algorithm,array_size,sample_count,mean_time_ms,median_time_ms,std_dev_ms,min_time_ms,max_time_ms,analysis_samples,mean_comparisons,mean_swaps,mean_max_recursion_depth,mean_initial_partition_imbalance,attempted_runs,passed_runs,failed_runs\n";
 
     for(const auto& [key, attempted]: attemptedRuns){
         std::vector<double> times;
