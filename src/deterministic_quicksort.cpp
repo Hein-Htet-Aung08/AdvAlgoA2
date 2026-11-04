@@ -1,3 +1,6 @@
+// Primary author: Felix Herrmann
+// Algorithm: Deterministic Quicksort
+
 #include <vector>
 #include <iostream>
 #include <algorithm>
