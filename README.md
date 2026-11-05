@@ -77,6 +77,6 @@ The benchmark displays a summary of total, passed, and failed runs in the termin
 benchmarks/main.cpp    Benchmark configuration, execution, validation, and CSV export
 include/               Quicksort headers and measurement definitions
 src/                   Deterministic and randomised Quicksort implementations
-CMakeLists.txt          CMake build configuration
-reportResults/          Results and materials included in the repository
+CMakeLists.txt         CMake build configuration
+reportResults/         Results and materials included in the repository
 ```
