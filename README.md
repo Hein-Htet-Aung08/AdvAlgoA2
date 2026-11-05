@@ -78,5 +78,5 @@ benchmarks/main.cpp    Benchmark configuration, execution, validation, and CSV e
 include/               Quicksort headers and measurement definitions
 src/                   Deterministic and randomised Quicksort implementations
 CMakeLists.txt         CMake build configuration
-reportResults/         Results and materials included in the repository
+reportResults/         Results used in the report and presentation video for the analysis of data
 ```
