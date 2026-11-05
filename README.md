@@ -9,6 +9,11 @@ This project compares two implementations of Quicksort: **deterministic last-ele
 
 The benchmark measures execution time and separately records element comparisons, swaps, maximum recursion depth, and initial partition imbalance. It uses fixed seeds, warm-up rounds, repeated timings, shuffled execution order, and correctness checks against `std::sort`.
 
+## Presentation Video Link
+
+The following is the YouTube video link to our presentation video.
+https://youtu.be/aSnGIHinGY0
+
 ## Minimum Requirements
 
 - **CMake 3.16 or later**
@@ -79,4 +84,5 @@ include/               Quicksort headers and measurement definitions
 src/                   Deterministic and randomised Quicksort implementations
 CMakeLists.txt         CMake build configuration
 reportResults/         Results used in the report and presentation video for the analysis of data
+report/                Includes our project report
 ```
