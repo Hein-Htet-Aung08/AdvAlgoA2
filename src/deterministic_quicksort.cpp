@@ -1,3 +1,6 @@
+// Primary author: Felix Herrmann
+// Algorithm: Deterministic Quicksort
+
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -57,11 +60,10 @@ void deterministicQSHelperAnalysis(std::vector<int>& input, int lowerLimit, int 
     int rightSize = upperLimit - boundary;
     int total = leftSize + rightSize;
 
-    if (total > 0){
+    if (total > 0 && depth == 1){
         double imbalance = static_cast<double>(std::abs(leftSize - rightSize))/total;
 
-        metrics.partitionImbalanceSum += imbalance;
-        ++metrics.partitionCount;
+        metrics.partitionImbalance += imbalance;
     }
 
     //lower
